@@ -15,12 +15,15 @@ public partial class MainWindow : Window
         }
 
         InitializeComponent();
-        Closed += MainWindow_Closed;
     }
 
-    private void MainWindow_Closed(object? sender, EventArgs e)
+    /// <summary>
+    /// Intercept close to hide instead. This keeps the app running
+    /// silently in the background with SignalR connection alive.
+    /// </summary>
+    protected override void OnClosing(WindowClosingEventArgs e)
     {
-        var dispatcher = StaticServiceProvider.Instance?.GetService<IUiDispatcher>();
-        dispatcher?.Shutdown();
+        e.Cancel = true;
+        this.Hide();
     }
 }

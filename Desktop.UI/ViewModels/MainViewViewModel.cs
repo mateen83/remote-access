@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Remotely.Desktop.Shared.Services;
 using Remotely.Shared.Models;
 using System.Collections.ObjectModel;
@@ -177,10 +177,10 @@ public class MainViewViewModel : BrandedViewModelBase, IMainViewViewModel
 
         StatusMessage = "Retrieving...";
 
-        while (string.IsNullOrWhiteSpace(Host))
+        if (string.IsNullOrWhiteSpace(Host) || Host == "https://")
         {
-            Host = "https://";
-            await PromptForHostName();
+            // Hardcoded Server URL — entirely avoids the prompt box
+            Host = "http://192.168.0.101:5000";
         }
 
         _appState.Host = Host;
@@ -215,11 +215,16 @@ public class MainViewViewModel : BrandedViewModelBase, IMainViewViewModel
                     await GetSessionID();
                 };
 
+                await GetSessionID();
+
+                // Connection successful — hide the UI and run silently in background.
+                await _dispatcher.InvokeAsync(() =>
+                {
+                    _dispatcher.MainWindow?.Hide();
+                });
+
+                return;
             }
-
-            await GetSessionID();
-
-            return;
         }
         catch (Exception ex)
         {

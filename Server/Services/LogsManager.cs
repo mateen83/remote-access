@@ -1,4 +1,4 @@
-﻿using Remotely.Shared.Extensions;
+using Remotely.Shared.Extensions;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
@@ -54,7 +54,7 @@ public class LogsManager : ILogsManager
             return;
         }
 
-        await foreach (var file in files.ToAsyncEnumerable())
+        await foreach (var file in Remotely.Shared.Extensions.IEnumerableExtensions.ToAsyncEnumerable(files))
         {
             try
             {
